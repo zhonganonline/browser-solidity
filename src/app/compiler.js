@@ -10,7 +10,7 @@ var EventManager = require('../lib/eventManager');
 /*
   trigger compilationFinished, compilerLoaded, compilationStarted
 */
-function Compiler (editor, queryParams, handleGithubCall, updateFiles) {
+function Compiler (editor, handleGithubCall, updateFiles) {
   var self = this;
   this.event = new EventManager();
 
@@ -19,6 +19,12 @@ function Compiler (editor, queryParams, handleGithubCall, updateFiles) {
 
   var cachedRemoteFiles = {};
   var worker = null;
+
+  var optimize = false;
+
+  this.setOptimize = function (_optimize) {
+    optimize = _optimize;
+  };
 
   var compile = function (missingInputs) {
     editor.clearAnnotations();
@@ -32,7 +38,6 @@ function Compiler (editor, queryParams, handleGithubCall, updateFiles) {
       if (input === null) {
         self.event.trigger('compilationFinished', [false, [error], files]);
       } else {
-        var optimize = queryParams.get().optimize;
         compileJSON(input, optimize ? 1 : 0);
       }
     });

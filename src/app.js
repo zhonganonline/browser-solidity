@@ -416,7 +416,7 @@ var run = function () {
   }
 
   var executionContext = new ExecutionContext();
-  var compiler = new Compiler(editor, queryParams, handleGithubCall, updateFiles);
+  var compiler = new Compiler(editor, handleGithubCall, updateFiles);
   var formalVerification = new FormalVerification($('#verificationView'), compiler.event);
 
   var transactionDebugger = new Debugger('#debugger', editor, compiler, executionContext.event, swicthToFile);
@@ -531,8 +531,12 @@ var run = function () {
     }
   }
 
+  compiler.setOptimize(document.querySelector('#optimize').checked);
+
   document.querySelector('#optimize').addEventListener('change', function () {
-    queryParams.update({ optimize: document.querySelector('#optimize').checked });
+    var optimize = document.querySelector('#optimize').checked;
+    queryParams.update({ optimize: optimize });
+    compiler.setOptimize(optimize);
     compiler.compile();
   });
 
